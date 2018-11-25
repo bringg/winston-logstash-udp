@@ -120,7 +120,7 @@ class LogstashUDP extends Transport {
   }
 
   sendLog(message, callback) {
-    var buf = new Buffer(message.replace(/\s+$/, "") + os.EOL);
+    var buf = Buffer.from(message.replace(/\s+$/, "") + os.EOL);
     callback = callback || NOOP;
 
     if (!this.client) this.connect();
