@@ -18,7 +18,7 @@ chai.use(sinonChai);
 
 require("../");
 
-describe("winston-logstash-udp transport", function() {
+describe("winston-logstash-udp transport", function () {
   var test_server,
     port = 9999,
     transport = null;
@@ -31,7 +31,7 @@ describe("winston-logstash-udp transport", function() {
     var server = dgram.createSocket("udp4");
     server.unref();
 
-    server.on("error", function(err) {
+    server.on("error", function (err) {
       console.log("server error:\n" + err.stack);
       server.close();
     });
@@ -52,7 +52,7 @@ describe("winston-logstash-udp transport", function() {
         port: port,
         appName: "test",
         localhost: "localhost",
-        pid: 12345
+        pid: 12345,
       },
       options = options || {},
       field;
@@ -70,11 +70,11 @@ describe("winston-logstash-udp transport", function() {
 
     return {
       logger: winston.createLogger({ transports: [transport] }),
-      transport
+      transport,
     };
   }
 
-  describe("with logstash server", function() {
+  describe("with logstash server", function () {
     beforeEach(() => timekeeper.freeze(freezed_time));
 
     it("handles non-objects in splat", async () => {
@@ -84,11 +84,11 @@ describe("winston-logstash-udp transport", function() {
         application: "test",
         host: os.hostname(),
         level: "info",
-        message: "hello world"
+        message: "hello world",
       };
 
-      const logSent = new Promise(resolve => {
-        test_server = createTestServer(port, function(data) {
+      const logSent = new Promise((resolve) => {
+        test_server = createTestServer(port, function (data) {
           resolve(data);
         });
       });
@@ -107,11 +107,11 @@ describe("winston-logstash-udp transport", function() {
         application: "test",
         host: os.hostname(),
         level: "info",
-        message: "hello world"
+        message: "hello world",
       };
 
-      const logSent = new Promise(resolve => {
-        test_server = createTestServer(port, function(data) {
+      const logSent = new Promise((resolve) => {
+        test_server = createTestServer(port, function (data) {
           resolve(data);
         });
       });
@@ -124,6 +124,14 @@ describe("winston-logstash-udp transport", function() {
       expect(response).to.be.eql(expected);
     });
 
+    it("handles bad formatted logs", async () => {
+      var logger = createLogger(port);
+
+      expect(() => {
+        logger.info("bad", { timer: setTimeout(() => {}, 10) });
+      }).to.throw(/Converting circular structure to JSON/);
+    });
+
     it("send logs with splat over UDP as valid json", async () => {
       var logger = createLogger(port);
       var expected = {
@@ -132,11 +140,11 @@ describe("winston-logstash-udp transport", function() {
         host: os.hostname(),
         level: "info",
         message: "hello world",
-        stream: "sample"
+        stream: "sample",
       };
 
-      const logSent = new Promise(resolve => {
-        test_server = createTestServer(port, function(data) {
+      const logSent = new Promise((resolve) => {
+        test_server = createTestServer(port, function (data) {
           resolve(data);
         });
       });
@@ -154,8 +162,8 @@ describe("winston-logstash-udp transport", function() {
 
       sinon.stub(transport, "_buildLog").returns('{"what":"ever"}');
 
-      const logSent = new Promise(resolve => {
-        test_server = createTestServer(port, function(data) {
+      const logSent = new Promise((resolve) => {
+        test_server = createTestServer(port, function (data) {
           resolve(data);
         });
       });
@@ -177,10 +185,10 @@ describe("winston-logstash-udp transport", function() {
     });
   });
 
-  describe("without logstash server", function() {
+  describe("without logstash server", function () {
     it("return an error message if UDP DNS errors occur on the socket", async () => {
       const { logger, transport } = createLoggerWithTransport(port, {
-        host: "unresolvedhost"
+        host: "unresolvedhost",
       });
 
       const warning = pEvent(transport, "warn");
