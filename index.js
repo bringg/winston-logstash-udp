@@ -120,7 +120,7 @@ class LogstashUDP extends Transport {
     // prepare default meta object
     this.meta_defaults = Object.assign(options.meta || {}, {
       host: os.hostname(),
-      application: options.appName || process.title
+      application: options.appName || process.title,
     });
 
     // we want to avoid copy-by-reference for meta defaults, so make sure it's a flat object.
@@ -169,7 +169,7 @@ class LogstashUDP extends Transport {
     try {
       const logMessage = this._buildLog(info);
 
-      this.sender.send(logMessage, err => {
+      this.sender.send(logMessage, (err) => {
         if (err) {
           debug("received error while sending log", err);
           this.emit("warn", err);
@@ -180,6 +180,7 @@ class LogstashUDP extends Transport {
       });
     } catch (error) {
       debug("failed sending log", error);
+      callback(error, null);
     }
   }
 
@@ -191,7 +192,7 @@ class LogstashUDP extends Transport {
       "@version": "1",
       "@timestamp": new Date().toISOString(),
       level: info[LEVEL],
-      message: info.message
+      message: info.message,
     };
 
     return JSON.stringify(data);
