@@ -20,7 +20,7 @@ const dgram = require("dgram"),
   debug = require("debug")("winston-logstash-udp"),
   asyncDnsLookup = require("util").promisify(dns.lookup);
 
-const { LEVEL } = require("triple-beam");
+const { LEVEL, MESSAGE } = require("triple-beam");
 
 const NOOP = () => {};
 
@@ -117,6 +117,13 @@ class LogstashUDP extends Transport {
         ? options.connFlushInterval
         : 10000;
 
+    const defaultFormat = winston.format.printf(this._buildLog.bind(this));
+    if (!this.format) {
+      this.format = defaultFormat;
+    } else {
+      this.format = winston.format.combine(this.format, defaultFormat);
+    }
+
     // prepare default meta object
     this.meta_defaults = Object.assign(options.meta || {}, {
       host: os.hostname(),
@@ -167,9 +174,7 @@ class LogstashUDP extends Transport {
     }
 
     try {
-      const logMessage = this._buildLog(info);
-
-      this.sender.send(logMessage, (err) => {
+      this.sender.send(info[MESSAGE], (err) => {
         if (err) {
           debug("received error while sending log", err);
           this.emit("warn", err);
@@ -185,7 +190,7 @@ class LogstashUDP extends Transport {
   }
 
   _buildLog(info) {
-    const meta = Object.assign({}, info, this.meta_defaults);
+    const meta = Object.assign(info, this.meta_defaults);
 
     const data = {
       ...meta,
