@@ -124,11 +124,13 @@ describe("winston-logstash-udp transport", function () {
       expect(response).to.be.eql(expected);
     });
 
-    it("handles bad formatted logs", async () => {
+    it("handles bad formatted logs", () => {
       var logger = createLogger(port);
+      const circular = {};
+      circular.circular = circular;
 
       expect(() => {
-        logger.info("bad", { timer: setTimeout(() => {}, 10) });
+        logger.info("bad", { circular });
       }).to.throw(/Converting circular structure to JSON/);
     });
 
@@ -158,9 +160,10 @@ describe("winston-logstash-udp transport", function () {
     });
 
     it("adds an operating system's EOL character", async () => {
+      sinon
+        .stub(winston.transports.LogstashUDP.prototype, "_buildLog")
+        .returns('{"what":"ever"}');
       const { logger, transport } = createLoggerWithTransport(port);
-
-      sinon.stub(transport, "_buildLog").returns('{"what":"ever"}');
 
       const logSent = new Promise((resolve) => {
         test_server = createTestServer(port, function (data) {
