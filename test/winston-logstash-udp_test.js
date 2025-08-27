@@ -8,13 +8,12 @@ var chai = require("chai"),
   winston = require("winston"),
   timekeeper = require("timekeeper"),
   os = require("os"),
-  common = require("winston/lib/winston/common"),
   pEvent = require("p-event"),
   freezed_time = new Date(1330688329321);
 
 chai.config.includeStack = true;
 chai.should();
-chai.use(sinonChai);
+chai.use(sinonChai.default);
 
 require("../");
 
