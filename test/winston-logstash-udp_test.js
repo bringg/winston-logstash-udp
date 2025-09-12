@@ -8,7 +8,7 @@ var chai = require("chai"),
   winston = require("winston"),
   timekeeper = require("timekeeper"),
   os = require("os"),
-  pEvent = require("p-event"),
+  { pEvent } = require("p-event"),
   freezed_time = new Date(1330688329321);
 
 chai.config.includeStack = true;
