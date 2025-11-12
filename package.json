@@ -21,7 +21,7 @@
     "winston-transport": "^4.9.0"
   },
   "devDependencies": {
-    "chai": "^6.2.0",
+    "chai": "^6.2.1",
     "mocha": "^11.7.5",
     "p-event": "^7.0.0",
     "sinon": "^21.0.0",
