@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "debug": "^4.4.3",
-    "fastq": "^1.19.1",
+    "fastq": "^1.20.1",
     "triple-beam": "^1.4.1",
     "winston": "^3.19.0",
     "winston-transport": "^4.9.0"
