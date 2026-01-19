@@ -23,7 +23,7 @@
   "devDependencies": {
     "chai": "^6.2.2",
     "mocha": "^11.7.5",
-    "p-event": "^7.0.2",
+    "p-event": "^7.1.0",
     "sinon": "^21.0.1",
     "sinon-chai": "^4.0.1",
     "timekeeper": ">=2.3.1"
